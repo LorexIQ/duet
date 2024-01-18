@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Session" ADD COLUMN     "lastAction" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "sessionLifetime" DECIMAL(65,30) NOT NULL DEFAULT 7;

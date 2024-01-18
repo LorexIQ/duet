@@ -1,0 +1,35 @@
+@import "colors";
+
+$theme-map-light: (
+        $background: #fff,
+        $backspace: #f1f5f9,
+        $border: #e2e2e2,
+        $blur: rgba(0, 0, 0, 0.3),
+        $textColor1: #7c7c7c,
+        $textColor2: #f1f5f9,
+        $textColor3: #0f172a,
+        $error: #e11d48,
+
+        $accent1: #fff,
+        $accent2: #1f2937,
+
+        $vk-background: #0f172a,
+        $vk-color: #fff,
+);
+
+$theme-map-dark: (
+        $background: #0f172a,
+        $backspace: #020617,
+        $border: #e2e2e2,
+        $blur: rgba(255, 255, 255, 0.15),
+        $textColor1: #f1f5f9,
+        $textColor2: #030712,
+        $textColor3: #fff,
+        $error: #e11d48,
+
+        $accent1: #0f172a,
+        $accent2: #fff,
+
+        $vk-background: #fff,
+        $vk-color: #0f172a,
+);
