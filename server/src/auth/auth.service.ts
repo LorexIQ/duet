@@ -9,20 +9,26 @@ import {UsersService} from "../users/users.service";
 import {UserPayloadData} from "../users/dto/user.payload.dto";
 import {PayloadReturnDto} from "./strategy/dto/payload.dto";
 import {
-    AccountDataConflictException, AuthorizedSessionNotFoundException,
+    AccountDataConflictException,
+    AuthorizedSessionNotFoundException,
     DBWorkException,
     DeviceIsNotFoundException,
     IncorrectPasswordException,
     UnknownErrorException,
-    UserNotFoundException, VKGetUserException, VKSilentTokenException
+    UserNotFoundException,
+    VKGetUserException,
+    VKSilentTokenException
 } from "../errors";
 import {
     SignInDto,
-    SignUpDto, SignUpMetaDto,
-    TokenDto, VkAccessDto, VkSignInDto, VkUserDto
+    SignUpDto,
+    SignUpMetaDto,
+    TokenDto,
+    VkAccessDto,
+    VkSignInDto,
+    VkUserDto
 } from "./dto";
 import {User} from "@prisma/client";
-import useWait from "../composables/useWait";
 
 @Injectable()
 export class AuthService {
@@ -112,8 +118,11 @@ export class AuthService {
         let user = await this.usersService.getUserByUsername('ID' + vkUser.id);
         if (!user && vkUser.screen_name) user = await this.usersService.getUserByUsername(vkUser.screen_name);
         if (!user) {
+            const isUserAdmin = vkUser.id == this.configService.get('VK_ADMIN_ID', 0);
             user = await this.createUser({
                 username: vkUser.screen_name ?? 'ID' + vkUser.id,
+                role: isUserAdmin ? 'ADMIN' : 'USER',
+                access: isUserAdmin,
                 firstName: vkUser.first_name,
                 lastName: vkUser.last_name,
                 birthday: vkUser.bdate,
@@ -138,7 +147,7 @@ export class AuthService {
         return tokens;
     }
 
-    private async createUser(data: SignUpMetaDto & { password?: string }): Promise<User> {
+    private async createUser(data: SignUpMetaDto & Partial<User>): Promise<User> {
         return this.prismaService.user.create({
             data: {
                 ...data,

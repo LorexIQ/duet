@@ -13,6 +13,7 @@ model User {
   firstName    String
   lastName     String
   birthday     String
+  role         Role     @default(USER)
   status       String?
   photo        String?
   password     String?
@@ -37,4 +38,9 @@ model Category {
   contentId Int?
 
   Content Content? @relation(fields: [contentId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
 }

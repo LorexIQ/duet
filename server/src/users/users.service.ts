@@ -61,6 +61,7 @@ export class UsersService {
             status: true,
             access: true,
             password: false,
+            role: true,
 
             ...config
         };

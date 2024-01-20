@@ -9,7 +9,7 @@ const auth = useLocalAuth();
     <span>Обратитесь к администратору</span>
     <ui-button
         icon="Reload"
-        @click="router.go()"
+        @click="router.go(0)"
     >
       Обновить
     </ui-button>
@@ -23,6 +23,9 @@ const auth = useLocalAuth();
 </template>
 
 <style scoped lang="scss">
+@import "@colors";
+
+
 .access-denied-page {
   display: flex;
   flex-direction: column;
@@ -31,6 +34,8 @@ const auth = useLocalAuth();
   height: 100%;
 
   & > * {
+    color: var($textColor3);
+
     &:first-child {
       font-size: 22px;
       font-weight: 600;

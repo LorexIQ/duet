@@ -7,4 +7,5 @@ export interface UserEntity {
     birthday: string;
     status: string;
     access: boolean;
+    role: 'USER' | 'ADMIN';
 }

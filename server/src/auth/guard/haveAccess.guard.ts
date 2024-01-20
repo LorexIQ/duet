@@ -15,7 +15,7 @@ export class HaveAccessGuard extends AccessTokenGuard {
     const isTokenValid = await super.canActivate(context);
     const user = context.switchToHttp().getRequest().user.user as UserPayloadData;
 
-    if (!user.access && user.username !== this.configService.get('VK_ADMIN_USERNAME', ''))
+    if (!user.access && user.role === 'USER')
       throw ContentAccessDividedException;
 
     return Boolean(isTokenValid);

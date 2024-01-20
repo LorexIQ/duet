@@ -10,7 +10,10 @@ watch(fetchStorage.isLoader, value => {
 
 <template>
   <div class="default-layout">
-    <system-logo/>
+    <system-navbar/>
+    <div class="default-layout__header">
+      <system-logo/>
+    </div>
     <div class="default-layout__content">
       <slot/>
     </div>
@@ -25,7 +28,6 @@ watch(fetchStorage.isLoader, value => {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
   max-width: min(600px, 100%);
   height: 100%;
   margin: 0 auto;
@@ -33,6 +35,18 @@ watch(fetchStorage.isLoader, value => {
   background: var($background);
   transition: .3s;
 
+  &__header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    & > .profile-button {
+      position: absolute;
+      top: 17px;
+      right: 0;
+    }
+  }
   &__content {
     width: 100%;
     height: 100%;

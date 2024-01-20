@@ -1,7 +1,17 @@
+@import "colors";
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
   font-weight: 400;
+}
+
+.snowflake {
+  pointer-events: none;
+}
+
+.background-shadow {
+  box-shadow: 0 0 2px -1px var($textColor3);
 }

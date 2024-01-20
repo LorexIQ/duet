@@ -22,6 +22,10 @@ export class SignUpMetaDto {
     photo: string;
 
     @IsString()
+    @IsOptional()
+    role: 'USER' | 'ADMIN';
+
+    @IsString()
     @MinLength(5)
     username: string;
 }

@@ -12,6 +12,9 @@ const icons = prepareIconsType({
     Eye: 'mdi:eye',
     EyeOff: 'mdi:eye-off',
 
+    MenuOpen: 'line-md:close-to-menu-transition',
+    MenuClose: 'line-md:menu-to-close-transition',
+
     VK: 'uil:vk',
 });
 

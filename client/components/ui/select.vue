@@ -81,7 +81,7 @@ function selectElement(element: UISelectListElement): void {
 
   &__header {
     &__title {
-      
+
     }
     &__box {
       position: relative;
