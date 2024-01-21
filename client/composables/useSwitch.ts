@@ -8,6 +8,7 @@ export interface UseSwitch {
     show(): void;
     hide(): void;
     status: Ref<boolean>;
+    delay: Readonly<number>;
 }
 
 export default function (config?: UseSwitchProps): UseSwitch {
@@ -32,5 +33,6 @@ export default function (config?: UseSwitchProps): UseSwitch {
         show,
         hide,
         status: currentStatus,
+        delay: minHideDelay
     };
 }

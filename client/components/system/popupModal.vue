@@ -2,12 +2,31 @@
 import type {UseSwitch} from "~/composables/useSwitch";
 
 interface Props {
+  zIndex?: number;
+  optimizeListHidden?: boolean
   modelValue: UseSwitch;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  zIndex: 2,
+  optimizeListHidden: true
+});
 const boxRef = ref<HTMLDivElement>();
 const boxHeight = ref(1000);
+const isListShow = ref(false);
+const isAnimation = ref(false);
+let closeDelayTimeoutId: NodeJS.Timeout;
+
+watch(props.modelValue.status, value => {
+  clearTimeout(closeDelayTimeoutId);
+  if (value) {
+    isListShow.value = true;
+    setTimeout(() => isAnimation.value = true);
+  } else {
+    isAnimation.value = false
+    closeDelayTimeoutId = setTimeout(() => isListShow.value = false, props.modelValue.delay);
+  }
+});
 
 function closeModal() {
   props.modelValue.hide();
@@ -20,8 +39,12 @@ onUpdated(() => boxHeight.value = boxRef.value?.clientHeight!);
 <template>
   <div
       class="popup-modal"
-      :class="{ 'popup-modal--opened': modelValue.status.value }"
-      :style="`--box-height: ${boxHeight}px;`"
+      v-if="optimizeListHidden ? isListShow : true"
+      :class="{ 'popup-modal--opened': isAnimation }"
+      :style="{
+        '--box-height': `${boxHeight}px`,
+        '--box-z-index': zIndex
+      }"
   >
     <div
         class="popup-modal__background"
@@ -48,7 +71,7 @@ onUpdated(() => boxHeight.value = boxRef.value?.clientHeight!);
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1;
+  z-index: var(--box-z-index);
   display: flex;
   justify-content: center;
   pointer-events: none;

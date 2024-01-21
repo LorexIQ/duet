@@ -56,6 +56,7 @@ export default defineNuxtConfig({
     localAuth: {
         origin: env.serverOrigin + '/api/',
         token: {
+            lifetime: 43200,
             path: 'accessToken',
             queryKey: 'accessToken'
         },

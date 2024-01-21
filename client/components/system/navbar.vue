@@ -21,6 +21,7 @@ const pageButtons: PageButton[] = [
 ];
 
 function openProfile() {
+  closeNavbar();
   router.push({ path: '/profile' });
 }
 function changeModalState() {
@@ -39,6 +40,7 @@ function exitFromAccount() {
 <template>
   <system-popup-modal
       v-if="auth.meta.value.status === 'authorized'"
+      :optimize-list-hidden="false"
       v-model="stateSwitch"
   >
     <div
@@ -101,6 +103,7 @@ function exitFromAccount() {
     width: 100px;
     border-radius: 20% 20% 0 0 / 85% 85% 0 0;
     background: var($backspace);
+    box-shadow: 0 -1px 2px -1px var($textColor3);
     color: var($textColor3);
     cursor: pointer;
 
@@ -142,7 +145,6 @@ function exitFromAccount() {
     border-radius: 12.5px 12.5px;
     background: var($background);
     color: var($textColor3);
-    cursor: pointer;
     overflow: hidden;
 
     &__info {
@@ -151,6 +153,7 @@ function exitFromAccount() {
       align-items: center;
       width: calc(100% - 30px);
       padding: 5px 0 5px 5px;
+      cursor: pointer;
 
       &__name {
         display: flex;
@@ -175,6 +178,7 @@ function exitFromAccount() {
       width: 30px;
       height: 56px;
       padding: 5px;
+      cursor: pointer;
     }
 
     & > div {
