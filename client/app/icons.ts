@@ -6,6 +6,11 @@ const icons = prepareIconsType({
     Reload: 'tabler:reload',
     Exit: 'solar:exit-bold',
 
+    Access: 'uim:lock-access',
+    ID: 'bxs:id-card',
+    User: 'gridicons:user',
+    Birthday: 'mingcute:birthday-2-fill',
+
     ArrowUp: 'icon-park-solid:up-one',
     ArrowDown: 'icon-park-solid:down-one',
 
@@ -16,6 +21,8 @@ const icons = prepareIconsType({
     MenuClose: 'line-md:menu-to-close-transition',
 
     VK: 'uil:vk',
+
+    KeyCtrl: 'fluent:control-button-20-regular',
 });
 
 export type IconsType = keyof typeof icons;

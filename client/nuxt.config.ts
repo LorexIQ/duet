@@ -4,6 +4,7 @@ const packageJSON = require('./package.json');
 
 const env = {
     serverOrigin: process.env.SERVER_ORIGIN ?? 'SERVER_ORIGIN',
+    mode: process.env.MODE ?? 'MODE',
     vkAppId: process.env.VK_APP_ID ?? 'VK_APP_ID',
 };
 

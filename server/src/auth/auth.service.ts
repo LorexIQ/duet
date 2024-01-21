@@ -119,13 +119,14 @@ export class AuthService {
         if (!user && vkUser.screen_name) user = await this.usersService.getUserByUsername(vkUser.screen_name);
         if (!user) {
             const isUserAdmin = vkUser.id == this.configService.get('VK_ADMIN_ID', 0);
+
             user = await this.createUser({
                 username: vkUser.screen_name ?? 'ID' + vkUser.id,
                 role: isUserAdmin ? 'ADMIN' : 'USER',
                 access: isUserAdmin,
                 firstName: vkUser.first_name,
                 lastName: vkUser.last_name,
-                birthday: vkUser.bdate,
+                birthday: this.formatDateString(vkUser.bdate),
                 status: vkUser.status,
                 photo: vkUser.photo_200
             });
@@ -166,7 +167,7 @@ export class AuthService {
         const [accessToken, refreshToken] = await Promise.all([
             this.jwtService.signAsync(payload, {
                 secret: this.configService.get('ACCESS_SECRET', ''),
-                expiresIn: '1d'
+                expiresIn: '24h'
             }),
             this.jwtService.signAsync(payload, {
                 secret: this.configService.get('REFRESH_SECRET', ''),
@@ -181,5 +182,8 @@ export class AuthService {
         await this.usersService.update(userId, {
             refreshToken: tokenHashed
         });
+    }
+    private formatDateString(date: string) {
+        return date.split('.').map(component => component.length === 1 ? '0' + component : component).join('.');
     }
 }
