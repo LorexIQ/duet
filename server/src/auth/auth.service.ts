@@ -123,12 +123,14 @@ export class AuthService {
             user = await this.createUser({
                 username: vkUser.screen_name ?? 'ID' + vkUser.id,
                 role: isUserAdmin ? 'ADMIN' : 'USER',
+                gender: vkUser.sex === 1 ? 'FEMALE' : vkUser.sex === 2 ? 'MALE' : 'NULL',
                 access: isUserAdmin,
                 firstName: vkUser.first_name,
                 lastName: vkUser.last_name,
                 birthday: this.formatDateString(vkUser.bdate),
                 status: vkUser.status,
-                photo: vkUser.photo_200
+                photo: vkUser.photo_200,
+                vkId: vkUser.id
             });
         }
 

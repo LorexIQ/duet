@@ -24,6 +24,9 @@ const props = defineProps<Props>();
     <div class="ui-info-pin__title">
       <slot name="title">Title</slot>
     </div>
+    <div class="ui-info-pin__actions">
+      <slot name="actions"/>
+    </div>
   </div>
 </template>
 
@@ -32,7 +35,7 @@ const props = defineProps<Props>();
 
 .ui-info-pin {
   display: grid;
-  grid-template-areas: "I V" "I T";
+  grid-template-areas: "I V A" "I T A";
   grid-template-columns: 22px auto;
   gap: 2px 10px;
   padding: 6px 10px;
@@ -47,10 +50,16 @@ const props = defineProps<Props>();
     grid-area: V;
     font-size: 20px;
     font-weight: 600;
+    color: var($textColor3);
   }
   &__title {
     grid-area: T;
     color: var($textColor1);
+  }
+  &__actions {
+    grid-area: A;
+    justify-self: flex-end;
+    align-self: center;
   }
 }
 </style>

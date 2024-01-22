@@ -1,15 +1,16 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="R extends boolean, T extends (R extends true ? any : UISelectListElement)">
 import PopupModal from "~/components/system/popupModal.vue";
 
 export interface UISelectListElement {
-  id: number;
+  value: any;
   title: string;
 }
 
 interface Props {
   list: UISelectListElement[];
   title?: string;
-  modelValue?: UISelectListElement;
+  returnValue?: R;
+  modelValue: T;
 }
 interface Emits {
   (e: 'update:modelValue', v: UISelectListElement): void;
@@ -18,13 +19,16 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const selectedEl = ref(props.modelValue);
+const selectedEl = ref(calcSelectedEl(props.modelValue));
 const listSwitch = useSwitch();
 
-watch(() => props.modelValue, value => selectedEl.value = value);
+watch(() => props.modelValue, value => selectedEl.value = calcSelectedEl(value));
 
+function calcSelectedEl(value: T): UISelectListElement {
+  return props.returnValue ? props.list.find(el => el.value === value)! : value;
+}
 function selectElement(element: UISelectListElement): void {
-  emit('update:modelValue', element);
+  emit('update:modelValue', props.returnValue ? element.value : element);
   listSwitch.hide();
 }
 </script>
@@ -59,16 +63,13 @@ function selectElement(element: UISelectListElement): void {
         <div
             class="ui-select__list__element"
             v-for="element in list"
-            :key="element.id"
+            :key="element.value"
             @click="selectElement(element)"
         >
           {{ element.title }}
         </div>
       </div>
     </popup-modal>
-<!--    <transition name="fade">-->
-
-<!--    </transition>-->
   </div>
 </template>
 
@@ -84,7 +85,7 @@ function selectElement(element: UISelectListElement): void {
     }
     &__box {
       position: relative;
-      padding: 6px 10px;
+      padding: 6px 30px 6px 10px;
       border: 1px solid var($border);
       border-radius: 8px;
       cursor: pointer;

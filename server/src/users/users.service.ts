@@ -2,25 +2,36 @@ import {Injectable} from '@nestjs/common';
 import {User} from "@prisma/client";
 import {PrismaService} from "../prisma.service";
 import {UserPayloadSelector} from "./dto/user.payload.dto";
+import {IncorrectIDFormatException, UserNotFoundException} from "../errors";
+
+type ID = string | number;
 
 @Injectable()
 export class UsersService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    update(userId: number, data: Partial<User>): Promise<User> {
+    update(userId: ID, data: Partial<User>): Promise<User> {
+        this.checkIdCurrent(userId);
+
         return this.prismaService.user.update({
             where: {
-                id: userId
+                id: +userId
             },
             data
         });
     }
 
-    async getUserById<T extends UserPayloadSelector>(userId: number, returnConfig?: T) {
-        return this.prismaService.user.findUnique({
+    async getUserById<T extends UserPayloadSelector>(userId: ID, returnConfig?: T) {
+        this.checkIdCurrent(userId);
+
+        const user = await this.prismaService.user.findUnique({
             select: this.getReturnConfig(returnConfig),
-            where: { id: userId }
+            where: { id: +userId }
         }) as never as Promise<User>;
+
+        if (!user) throw UserNotFoundException;
+
+        return user;
     }
     async getUserByUsername<T extends UserPayloadSelector>(username: string, returnConfig?: T) {
         return this.prismaService.user.findUnique({
@@ -62,8 +73,13 @@ export class UsersService {
             access: true,
             password: false,
             role: true,
+            gender: true,
+            vkId: true,
 
             ...config
         };
+    }
+    private checkIdCurrent(id: ID) {
+        if (!/^-?[\d.]+(?:e-?\d+)?$/.test(id.toString())) throw IncorrectIDFormatException;
     }
 }

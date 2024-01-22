@@ -26,6 +26,10 @@ export class SignUpMetaDto {
     role: 'USER' | 'ADMIN';
 
     @IsString()
+    @IsOptional()
+    gender: 'MALE' | 'FEMALE' | 'NULL';
+
+    @IsString()
     @MinLength(5)
     username: string;
 }

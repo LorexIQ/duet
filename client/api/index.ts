@@ -15,9 +15,16 @@
 * };
 * */
 import type {TokenEntity, UserEntity} from "~/api/entities";
+import type {APIEmpty, APIParam} from "~/composables/useAPIFetch";
 
 export type APIRoutes = {
     GET: {
+        'users/{id}': {
+            response: UserEntity;
+            params: {
+                id: APIParam;
+            };
+        };
         'users/me': {
             response: UserEntity;
         };
@@ -31,4 +38,15 @@ export type APIRoutes = {
             };
         };
     };
+    PATCH: {
+        'users/access/{id}': {
+            response: APIEmpty;
+            params: {
+                id: APIParam;
+            };
+            body: {
+                access: boolean;
+            }
+        }
+    }
 }

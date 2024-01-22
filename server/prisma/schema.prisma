@@ -13,12 +13,15 @@ model User {
   firstName    String
   lastName     String
   birthday     String
+  gender       Gender   @default(NULL)
   role         Role     @default(USER)
   status       String?
   photo        String?
   password     String?
   refreshToken String?
   access       Boolean? @default(false)
+
+  vkId Int?
 }
 
 model Content {
@@ -43,4 +46,10 @@ model Category {
 enum Role {
   USER
   ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  NULL
 }

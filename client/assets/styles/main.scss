@@ -8,6 +8,15 @@
   font-weight: 400;
 }
 
+a {
+  text-decoration: none;
+  color: var($textColor3);
+
+  &:visited {
+    color: var($textColor3);
+  }
+}
+
 .snowflake {
   pointer-events: none;
 }

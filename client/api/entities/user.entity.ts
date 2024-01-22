@@ -1,5 +1,6 @@
 export interface UserEntity {
     id: number;
+    vkId: number;
     username: string;
     photo: string;
     firstName: string;
@@ -7,5 +8,9 @@ export interface UserEntity {
     birthday: string;
     status: string;
     access: boolean;
-    role: 'USER' | 'ADMIN';
+    gender: UserGenderEntity;
+    role: UserRoleEntity;
 }
+
+export type UserGenderEntity = 'MALE' | 'FEMALE' | 'NULL';
+export type UserRoleEntity = 'USER' | 'ADMIN';

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import * as VKID from "@vkid/sdk";
+import MessageFrame from "~/components/ui/messageFrame.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -62,19 +63,18 @@ definePageMeta({
       Войти через ВК
     </system-buttons-vk>
 
-    <div
-        class="auth-page__error"
-        v-else-if="isError"
-    >
-      <span>Ошибка входа</span>
-      <span>Повторите попытку</span>
-      <ui-button
-          icon="Reload"
-          @click="isFetch = false"
-      >
-        Обновить
-      </ui-button>
-    </div>
+    <message-frame v-else-if="isError">
+      <template v-slot:title>Ошибка входа</template>
+      <template v-slot:description>Повторите попытку</template>
+      <template v-slot:actions>
+        <ui-button
+            icon="Reload"
+            @click="isFetch = false"
+        >
+          Обновить
+        </ui-button>
+      </template>
+    </message-frame>
   </div>
 </template>
 
@@ -86,23 +86,5 @@ definePageMeta({
   justify-content: center;
   align-items: center;
   height: 100%;
-
-  &__error {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: var($textColor3);
-
-    & > span {
-      &:first-child {
-        font-size: 22px;
-        font-weight: 600;
-      }
-      &:nth-child(2) {
-        font-size: 12px;
-        padding-bottom: 15px;
-      }
-    }
-  }
 }
 </style>
