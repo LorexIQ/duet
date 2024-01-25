@@ -7,14 +7,12 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
     "studio": "npx prisma studio",
-    "migration": "npx prisma migrate dev --name init",
+    "db:migration": "npx prisma migrate dev --name init",
+    "db:push": "npx prisma db push",
     "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "start:mig": "npm run migration && npx prisma generate && npm run start:dev"
+    "start:mig": "npm run db:migration && npx prisma generate && npm run start:dev"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.1",
@@ -29,8 +27,8 @@
     "@nestjs/swagger": "^7.1.2",
     "@nestjs/websockets": "^10.1.2",
     "@prisma/client": "^5.0.0",
-    "argon2": "^0.30.3",
     "axios": "^1.6.5",
+    "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "dotenv": "^16.3.1",
@@ -44,6 +42,7 @@
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/cron": "^2.0.1",
     "@types/express": "^4.17.13",
     "@types/jest": "29.5.1",

@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma.service";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
-import * as argon2 from "argon2";
+import * as bcrypt from "bcryptjs";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
 import {HttpService} from "@nestjs/axios";
@@ -77,7 +77,7 @@ export class AuthService {
         );
 
         if (user) {
-            if (await argon2.verify(user.password, data.password)) {
+            if (await bcrypt.compare(user.password, data.password)) {
                 const tokens = await this.createTokens(user);
                 await this.updateRefreshToken(user.id, tokens.refreshToken);
                 return tokens;
@@ -139,7 +139,7 @@ export class AuthService {
         return tokens;
     }
     async refreshToken({ user, token }: PayloadReturnDto): Promise<any> {
-        const refreshTokenMatches = await argon2.verify(
+        const refreshTokenMatches = await bcrypt.compare(
             user.refreshToken,
             token
         );
@@ -154,14 +154,12 @@ export class AuthService {
         return this.prismaService.user.create({
             data: {
                 ...data,
-                ...(data.password ? { password: await this.hashData(data.password) } : {})
+                ...(data.password ? { password: this.hashData(data.password) } : {})
             }
         });
     }
-    private hashData(data: string): Promise<string> {
-        return argon2.hash(data, {
-            salt: Buffer.from(this.configService.get<string>('SALT', ''))
-        });
+    private hashData(data: string): string {
+        return bcrypt.hashSync(data, 10);
     }
     private async createTokens(data: UserPayloadData): Promise<TokenDto> {
         const payload = { id: data.id };

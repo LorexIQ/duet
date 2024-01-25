@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common';
 import {AppController} from './app.controller';
 import {UsersModule} from '../users/users.module';
-import { AuthModule } from '../auth/auth.module';
+import {AuthModule} from '../auth/auth.module';
 import {ConfigModule} from "@nestjs/config";
 import {ScheduleModule} from "@nestjs/schedule";
 
@@ -12,7 +12,7 @@ import {ScheduleModule} from "@nestjs/schedule";
         }),
         ScheduleModule.forRoot(),
         UsersModule,
-        //AuthModule
+        AuthModule
     ],
     controllers: [
         AppController
