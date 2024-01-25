@@ -11,7 +11,7 @@ COPY . .
 ARG WORKDIR_PATH="docker/.env"
 ENV WORKDIR_PATH=$WORKDIR_PATH
 
-RUN nuxt build --dotenv WORKDIR_PATH
+RUN npx nuxi build --dotenv $WORKDIR_PATH
 
 FROM node:18-alpine
 
