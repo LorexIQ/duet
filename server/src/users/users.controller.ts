@@ -4,7 +4,6 @@ import {UserPayloadData} from "./dto/user.payload.dto";
 import {HaveAccessGuard} from "../auth/guard/haveAccess.guard";
 import {UserData} from "./decorator/user-data.decorator";
 import {AccessTokenGuard} from "../auth/guard";
-import {UserNotFoundException} from "../errors";
 import {Roles} from "./decorator/roles.decorator";
 import {Role} from "@prisma/client";
 import {UserUpdateAccessDto} from "./dto/user-update.dto";

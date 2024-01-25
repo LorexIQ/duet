@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: moviegram-api
+    image: moviegram-api
+    env_file:
+      - .env
+    build:
+      context: ../.
+      dockerfile: ./docker/containers/api/Dockerfile
+    restart: always
+    ports:
+      - ${APP_PORT:-4000}:${APP_PORT:-4000}
+    depends_on:
+      - db
+  db:
+    container_name: moviegram-db
+    image: postgres:13-alpine
+    env_file:
+      - .env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./containers/db/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+    ports:
+      - ${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}
+    restart: unless-stopped
+    command: -p ${POSTGRES_PORT:-5432}
+
+volumes:
+  postgres:
+    name: moviegram-backend

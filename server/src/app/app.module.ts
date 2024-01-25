@@ -12,7 +12,7 @@ import {ScheduleModule} from "@nestjs/schedule";
         }),
         ScheduleModule.forRoot(),
         UsersModule,
-        AuthModule
+        //AuthModule
     ],
     controllers: [
         AppController

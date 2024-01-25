@@ -37,7 +37,7 @@ async function bootstrap() {
       .addServer('app', socketsServer)
       .build();
   const socketsDocument = AsyncApiModule.createDocument(app, socketsConfig);
-  await AsyncApiModule.setup('/api/swaggerEvents', app, socketsDocument);
+  //await AsyncApiModule.setup('/api/swaggerEvents', app, socketsDocument);
 
   await app.listen(PORT, () => useLog(`Сервер запущен. Порт: ${PORT}`));
 }

@@ -1,7 +1,3 @@
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
 ## Installation
 
 ```bash
@@ -16,12 +12,26 @@ $ npm run start:dev
 
 # migration mode
 $ npm run start:mig
+
+# build and run project
+$ npm run build
+$ npm run start:prod
 ```
 
 ## Env
 ```bash
-DATABASE_URL="postgresql://{dbUserLogin}:{dbUserPassword}@{dbIp}:{dbPort}/{dbName}?schema=public"
-SALT=0
-ACCESS_SECRET=0
-REFRESH_SECRET=0
+APP_PORT=
+SALT=
+ACCESS_SECRET=
+REFRESH_SECRET=
+
+VK_ACCESS_TOKEN=
+VK_ADMIN_ID=
+
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_URL=
+POSTGRES_PORT=
+POSTGRES_DB=
+POSTGRES_HOST_AUTH_METHOD=trust
 ```
