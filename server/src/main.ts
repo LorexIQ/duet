@@ -7,7 +7,7 @@ import {GuardianFilter} from "./errors/GuardianFilter";
 import {AsyncApiDocumentBuilder, AsyncApiModule, AsyncServerObject} from "nestjs-asyncapi";
 
 async function bootstrap() {
-  const PORT = +process.env.APP_PORT || 4000;
+  const PORT = +process.env.API_PORT || 8000;
   const app = await NestFactory.create(AppModule, {cors: true});
 
   app.setGlobalPrefix('api');

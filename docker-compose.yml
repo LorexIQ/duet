@@ -1,0 +1,72 @@
+version: '3.9'
+
+services:
+#  nginx:
+#    container_name: moviegram-nginx
+#    image: nginx:stable
+#    restart: always
+#    volumes:
+#      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+#    networks:
+#      - moviegram-network
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    depends_on:
+#      - client
+#      - api
+
+
+  client:
+    container_name: moviegram-client
+    image: moviegram-client
+    restart: always
+    build:
+      context: ./client
+      dockerfile: ./docker/Dockerfile
+    env_file:
+      - .env
+    environment:
+      - PORT=$CLIENT_PORT
+    networks:
+      - moviegram-network
+    ports:
+      - ${CLIENT_PORT:-3000}:${CLIENT_PORT:-3000}
+  api:
+    container_name: moviegram-api
+    image: moviegram-api
+    restart: always
+    env_file:
+      - .env
+    build:
+      context: ./server
+      dockerfile: ./docker/containers/api/Dockerfile
+    networks:
+      - moviegram-network
+    ports:
+      - ${API_PORT:-8000}:${API_PORT:-8000}
+    depends_on:
+      - db
+  db:
+    container_name: moviegram-db
+    image: postgres:13-alpine
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./containers/db/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+    networks:
+      - moviegram-network
+    ports:
+      - ${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}
+    command: -p ${POSTGRES_PORT:-5432}
+
+volumes:
+  postgres:
+    name: moviegram-backend
+
+networks:
+  moviegram-network:

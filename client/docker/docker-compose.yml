@@ -10,5 +10,7 @@ services:
       dockerfile: ./docker/Dockerfile
     env_file:
       - .env
+    environment:
+      - PORT=$CLIENT_PORT
     ports:
-      - ${PORT:-3000}:${PORT:-3000}
+      - ${CLIENT_PORT:-3000}:${CLIENT_PORT:-3000}
