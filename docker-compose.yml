@@ -28,6 +28,8 @@ services:
       - .env
     environment:
       - PORT=$CLIENT_PORT
+      - SERVER_ORIGIN=$SERVER_ORIGIN
+      - VK_APP_ID=$VK_APP_ID
     networks:
       - moviegram-network
     ports:
