@@ -32,6 +32,8 @@ services:
       - moviegram-network
     ports:
       - ${CLIENT_PORT:-3000}:${CLIENT_PORT:-3000}
+    depends_on:
+      - api
   api:
     container_name: moviegram-api
     image: moviegram-api
