@@ -8,6 +8,8 @@ const env = {
     vkAppId: process.env.VK_APP_ID ?? 'VK_APP_ID',
 };
 
+console.log(env);
+
 export default defineNuxtConfig({
     ssr: false,
 

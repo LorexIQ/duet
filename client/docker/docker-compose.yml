@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  client:
+    container_name: moviegram-client
+    image: moviegram-client
+    restart: always
+    build:
+      context: ../.
+      dockerfile: ./docker/Dockerfile
+    env_file:
+      - .env
+    ports:
+      - ${PORT:-3000}:${PORT:-3000}
