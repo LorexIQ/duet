@@ -16,4 +16,6 @@ WORKDIR /app
 
 COPY --from=builder /app/.output ./
 
+EXPOSE 3000
+
 CMD ["node", "server/index.mjs"]

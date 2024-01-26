@@ -1,21 +1,20 @@
 version: '3.9'
 
 services:
-#  nginx:
-#    container_name: moviegram-nginx
-#    image: nginx:stable
-#    restart: always
-#    volumes:
-#      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-#    networks:
-#      - moviegram-network
-#    ports:
-#      - "80:80"
-#      - "443:443"
-#    depends_on:
-#      - client
-#      - api
-
+  nginx:
+    container_name: moviegram-nginx
+    image: nginx:stable
+    restart: always
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - moviegram-network
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - client
+      - api
 
   client:
     container_name: moviegram-client
@@ -30,8 +29,8 @@ services:
       - PORT=3000
     networks:
       - moviegram-network
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     depends_on:
       - api
   api:
@@ -47,8 +46,8 @@ services:
       - API_PORT=4000
     networks:
       - moviegram-network
-    ports:
-      - "4000:4000"
+    expose:
+      - "4000"
     depends_on:
       - db
   db:
