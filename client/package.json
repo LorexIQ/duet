@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "build:prod": "nuxt build --dotenv docker/.env",
+    "build:docker": "nuxt build --dotenv docker/.env",
     "dev": "nuxt dev --host",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
