@@ -43,6 +43,8 @@ services:
     build:
       context: ./server
       dockerfile: ./docker/containers/api/Dockerfile
+    environment:
+      - API_PORT=4000
     networks:
       - moviegram-network
     ports:
