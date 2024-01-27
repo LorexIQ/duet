@@ -1,8 +1,9 @@
 if [ "$#" -eq 0 ];
   then
   echo "HELP:"
-  echo "restart - restart docker containers"
   echo "init - first initial project"
+  echo "start - up all containers"
+  echo "restart - restart docker containers"
   echo "rebuild - rebuild client and server containers"
   echo "rebuild nginx - rebuild only nginx container"
   echo "rebuild client - rebuild only client container"
