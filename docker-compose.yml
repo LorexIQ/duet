@@ -63,8 +63,6 @@ services:
       - ./containers/db/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
     networks:
       - moviegram-network
-    ports:
-      - ${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}
     command: -p ${POSTGRES_PORT:-5432}
 
 volumes:
