@@ -1,13 +1,15 @@
-import {UserPayloadData} from "../../../users/dto/user.payload.dto";
+import {Profile, User} from "@prisma/client";
 
-export class PayloadDto {
+export class TokenPayloadDto {
   id: number;
+  username: string;
   iat: number;
   ext: number;
 }
 
 export class PayloadReturnDto {
-  payload: PayloadDto;
-  user: UserPayloadData;
+  tokenPayload: TokenPayloadDto;
+  user: User;
+  profile: Profile;
   token: string;
 }

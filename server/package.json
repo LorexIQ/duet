@@ -10,6 +10,7 @@
     "studio": "npx prisma studio",
     "db:migration": "npx prisma migrate dev --name init",
     "db:push": "npx prisma db push",
+    "db:seed": "npx prisma db seed",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
     "start:mig": "npm run db:migration && npx prisma generate && npm run start:dev"
@@ -57,5 +58,8 @@
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.2.0",
     "typescript": "^5.0.0"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }

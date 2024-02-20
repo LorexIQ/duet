@@ -1,11 +1,14 @@
 <script setup lang="ts">
 const router = useRouter();
+const route = useRoute();
 const auth = useLocalAuth();
+
+const message = route.query.message ?? 'Доступ к ресурсу запрещён!';
 </script>
 
 <template>
   <ui-message-frame>
-    <template v-slot:title>Доступ к ресурсу запрещён!</template>
+    <template v-slot:title>{{ message }}</template>
     <template v-slot:description>Обратитесь к администратору</template>
     <template v-slot:actions>
       <ui-button
@@ -15,6 +18,14 @@ const auth = useLocalAuth();
         Обновить
       </ui-button>
       <ui-button
+          v-if="message"
+          icon="Back"
+          @click="router.go(-1)"
+      >
+        Назад
+      </ui-button>
+      <ui-button
+          v-else
           icon="Exit"
           @click="auth.signOut()"
       >

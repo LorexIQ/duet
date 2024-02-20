@@ -1,11 +1,10 @@
 import {ExecutionContext, Injectable, UseGuards} from "@nestjs/common";
 import {AccessTokenGuard} from "./accessToken.guard";
-import {UserPayloadData} from "../../users/dto/user.payload.dto";
 import {ContentAccessDividedException, RoleAccessDividedException} from "../../errors";
-import {ConfigService} from "@nestjs/config";
 import {Reflector} from "@nestjs/core";
 import {Role} from "@prisma/client";
 import {ROLES_KEY} from "../../users/decorator/roles.decorator";
+import {PayloadReturnDto} from "../strategy/dto/payload.dto";
 
 @UseGuards(AccessTokenGuard)
 @Injectable()
@@ -21,10 +20,10 @@ export class HaveAccessGuard extends AccessTokenGuard {
     ]);
 
     const isTokenValid = await super.canActivate(context);
-    const user = context.switchToHttp().getRequest().user.user as UserPayloadData;
-    const roleCheck = !requiredRoles ? true : requiredRoles.some(role => user.role === role);
+    const profile = (context.switchToHttp().getRequest().user as PayloadReturnDto).profile;
+    const roleCheck = !requiredRoles ? true : requiredRoles.some(role => profile.role === role);
 
-    if (!user.access && user.role === 'USER')
+    if (!profile.access && profile.role === 'USER')
       throw ContentAccessDividedException;
     else if (!roleCheck)
       throw RoleAccessDividedException;

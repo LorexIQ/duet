@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type {IconsType} from "~/app/icons";
 import type {UserEntity} from "~/api/entities";
-import MessageFrame from "~/components/ui/messageFrame.vue";
 import type {UISelectListElement} from "~/components/ui/select.vue";
-import isAdmin from "~/composables/isAdmin";
 
 interface PinConfig<T = null> {
   icon: IconsType;
@@ -12,7 +10,6 @@ interface PinConfig<T = null> {
   title: string;
   meta?: T;
 }
-
 
 interface Props {
   id: number;
@@ -177,7 +174,7 @@ onUnmounted(() => contentRef.value.removeEventListener("scroll", scrollList))
           <template v-slot:title>{{ accessPinConfig.title }}</template>
           <template v-slot:actions>
             <ui-select
-                v-if="isAdmin() && id !== useMeAuth().value.id && userProfile.role !== 'ADMIN'"
+                v-if="isAdmin().value && id !== useMeAuth().value.id && userProfile.role !== 'ADMIN'"
                 :return-value="true"
                 :list="accessSelectList"
                 v-model="userProfile.access"

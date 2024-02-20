@@ -1,12 +1,12 @@
-import {Body, Controller, Get, Param, Patch, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, UseGuards} from '@nestjs/common';
 import {UsersService} from "./users.service";
-import {UserPayloadData} from "./dto/user.payload.dto";
 import {HaveAccessGuard} from "../auth/guard/haveAccess.guard";
-import {UserData} from "./decorator/user-data.decorator";
 import {AccessTokenGuard} from "../auth/guard";
 import {Roles} from "./decorator/roles.decorator";
-import {Role} from "@prisma/client";
+import {Profile, Role} from "@prisma/client";
 import {UserUpdateAccessDto} from "./dto/user-update.dto";
+import {UserNotFoundException} from "../errors";
+import {UserProfile} from "./decorator/user-profile.decorator";
 
 
 @Controller('users')
@@ -16,26 +16,39 @@ export class UsersController {
     @Get()
     @Roles(Role.ADMIN)
     @UseGuards(HaveAccessGuard)
-    getAll() {
-        return this.usersService.getUsers();
+    getAll(): Promise<Profile[]> {
+        return this.usersService.getProfiles();
     }
 
     @Get('me')
     @UseGuards(AccessTokenGuard)
-    getMe(@UserData() data: UserPayloadData) {
-        return data;
+    getMe(@UserProfile() profile: Profile): Profile {
+        return profile;
     }
 
     @Get(':id')
-    getUserById(@Param('id') id: string) {
-        return this.usersService.getUserById(id);
+    @UseGuards(HaveAccessGuard)
+    async getUserById(@Param('id') id: string) {
+        this.usersService.checkIdCurrent(id);
+        const profile = await this.usersService.getProfileByUserId(+id);
+        if (!profile) throw UserNotFoundException;
+        return profile;
     }
 
     @Patch('access/:id')
     @Roles(Role.ADMIN)
     @UseGuards(HaveAccessGuard)
     async setUserAccess(@Param('id') id: string, @Body() { access }: UserUpdateAccessDto) {
-        await this.usersService.getUserById(id);
-        await this.usersService.update(id, { access });
+        this.usersService.checkIdCurrent(id);
+        if (!await this.usersService.getProfileByUserId(+id)) throw UserNotFoundException;
+        await this.usersService.updateProfile(+id, { access });
+    }
+
+    @Delete(':id')
+    @Roles(Role.ADMIN)
+    @UseGuards(HaveAccessGuard)
+    async deleteUserById(@Param('id') id: string): Promise<Profile> {
+        this.usersService.checkIdCurrent(id);
+        return this.usersService.deleteUserById(+id);
     }
 }

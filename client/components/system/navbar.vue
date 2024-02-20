@@ -2,6 +2,7 @@
 interface PageButton {
   title: string;
   link: string;
+  vIf?: () => boolean;
 }
 
 const router = useRouter();
@@ -17,6 +18,11 @@ const pageButtons: PageButton[] = [
   {
     title: 'Готовка',
     link: '/cooking'
+  },
+  {
+    title: 'Админ панель',
+    link: '/admin',
+    vIf: () => isAdmin().value
   },
 ];
 
@@ -76,16 +82,20 @@ function exitFromAccount() {
       </div>
     </div>
     <div class="navbar__pages background-shadow">
-      <nuxt-link
-          class="navbar__pages__page"
-          exact-active-class="navbar__pages__page--active"
+      <template
           v-for="page in pageButtons"
           :key="page.link"
-          :to="page.link"
-          @click="closeNavbar"
       >
-        {{ page.title }}
-      </nuxt-link>
+        <nuxt-link
+            class="navbar__pages__page"
+            exact-active-class="navbar__pages__page--active"
+            v-if="page.vIf?.() ?? true"
+            :to="page.link"
+            @click="closeNavbar"
+        >
+          {{ page.title }}
+        </nuxt-link>
+      </template>
     </div>
   </system-popup-modal>
 </template>

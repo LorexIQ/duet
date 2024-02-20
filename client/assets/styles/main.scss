@@ -1,5 +1,8 @@
 @import "colors";
 
+html {
+  background-color: var($backspace);
+}
 * {
   margin: 0;
   padding: 0;

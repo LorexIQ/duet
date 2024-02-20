@@ -1,34 +1,27 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma.service";
-import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 import * as bcrypt from "bcryptjs";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
 import {HttpService} from "@nestjs/axios";
 import {UsersService} from "../users/users.service";
-import {UserPayloadData} from "../users/dto/user.payload.dto";
 import {PayloadReturnDto} from "./strategy/dto/payload.dto";
 import {
-    AccountDataConflictException,
     AuthorizedSessionNotFoundException,
-    DBWorkException,
     DeviceIsNotFoundException,
     IncorrectPasswordException,
-    UnknownErrorException,
     UserNotFoundException,
     VKGetUserException,
     VKSilentTokenException
 } from "../errors";
 import {
     SignInDto,
-    SignUpDto,
-    SignUpMetaDto,
     TokenDto,
     VkAccessDto,
     VkSignInDto,
     VkUserDto
 } from "./dto";
-import {User} from "@prisma/client";
+import {Prisma, User} from "@prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -42,42 +35,11 @@ export class AuthService {
         private httpService: HttpService
     ) {}
 
-    async signUp(data: SignUpDto): Promise<TokenDto> {
-        data = {
-            firstName: 'default',
-            lastName: 'default',
-            birthday: 'default',
-            status: 'default',
-            photo: 'https://pnglib.nyc3.cdn.digitaloceanspaces.com/uploads/2020/04/number-1-black-and-white_5e943a56765ba-768x768.png',
-            ...data
-        };
-
-        if (await this.usersService.userExistedOrFalse({
-            username: data.username
-        })) throw AccountDataConflictException;
-
-        try {
-            const user = await this.createUser(data);
-            const tokens = await this.createTokens(user);
-            await this.updateRefreshToken(user.id, tokens.refreshToken);
-            return tokens;
-        } catch (e) {
-            if (e instanceof PrismaClientKnownRequestError) {
-                throw DBWorkException;
-            } else {
-                console.error(e);
-                throw UnknownErrorException;
-            }
-        }
-    }
     async signIn(data: SignInDto): Promise<TokenDto> {
-        const user = await this.usersService.userExistedOrFalse(
-            { username: data.username },
-            { password: true }
-        );
+        const user = await this.usersService.getUserByUsername(data.username);
 
         if (user) {
-            if (await bcrypt.compare(user.password, data.password)) {
+            if (await bcrypt.compare(data.password, user.password)) {
                 const tokens = await this.createTokens(user);
                 await this.updateRefreshToken(user.id, tokens.refreshToken);
                 return tokens;
@@ -90,7 +52,7 @@ export class AuthService {
     }
     async logOut(userId: number): Promise<void> {
         try {
-            await this.usersService.update(userId, {
+            await this.usersService.updateUser(userId, {
                 refreshToken: null
             });
         } catch (e) {
@@ -107,10 +69,11 @@ export class AuthService {
         }).then((res: any) => res.data.response) as VkAccessDto;
         if (!req) throw VKSilentTokenException;
 
+        const vkToken = req.access_token;
         const vkUser = await this.httpService.axiosRef.get(this.vkOrigin + 'account.getProfileInfo', {
             params: {
                 v: '5.199',
-                access_token: req.access_token
+                access_token: vkToken
             }
         }).then((res: any) => res.data.response) as VkUserDto;
         if (!vkUser) throw VKGetUserException;
@@ -120,18 +83,23 @@ export class AuthService {
         if (!user) {
             const isUserAdmin = vkUser.id == this.configService.get('VK_ADMIN_ID', 0);
 
-            user = await this.createUser({
-                username: vkUser.screen_name ?? 'ID' + vkUser.id,
-                role: isUserAdmin ? 'ADMIN' : 'USER',
-                gender: vkUser.sex === 1 ? 'FEMALE' : vkUser.sex === 2 ? 'MALE' : 'NULL',
-                access: isUserAdmin,
-                firstName: vkUser.first_name,
-                lastName: vkUser.last_name,
-                birthday: this.formatDateString(vkUser.bdate),
-                status: vkUser.status,
-                photo: vkUser.photo_200,
-                vkId: vkUser.id
-            });
+            user = await this.createUser(
+                {
+                    username: vkUser.screen_name ?? 'ID' + vkUser.id,
+                    vkToken
+                },
+                {
+                    role: isUserAdmin ? 'ADMIN' : 'USER',
+                    vkId: vkUser.id,
+                    gender: vkUser.sex === 1 ? 'FEMALE' : vkUser.sex === 2 ? 'MALE' : 'NULL',
+                    access: isUserAdmin,
+                    firstName: vkUser.first_name,
+                    lastName: vkUser.last_name,
+                    birthday: this.formatDateString(vkUser.bdate),
+                    status: vkUser.status,
+                    photo: vkUser.photo_200
+                }
+            );
         }
 
         const tokens = await this.createTokens(user);
@@ -150,19 +118,26 @@ export class AuthService {
         return tokens;
     }
 
-    private async createUser(data: SignUpMetaDto & Partial<User>): Promise<User> {
+    private async createUser(user: Prisma.UserCreateInput, profile: Omit<Prisma.ProfileCreateInput, 'user'>): Promise<User> {
         return this.prismaService.user.create({
             data: {
-                ...data,
-                ...(data.password ? { password: this.hashData(data.password) } : {})
+                ...user,
+                ...(user.password ? { password: this.hashData(user.password) } : {}),
+                ...(user.vkToken ? { vkToken: this.hashData(user.vkToken) } : {}),
+                profile: {
+                    create: profile
+                }
             }
         });
     }
     private hashData(data: string): string {
         return bcrypt.hashSync(data, 10);
     }
-    private async createTokens(data: UserPayloadData): Promise<TokenDto> {
-        const payload = { id: data.id };
+    private async createTokens(data: User): Promise<TokenDto> {
+        const payload = {
+            id: data.id,
+            username: data.username
+        };
 
         const [accessToken, refreshToken] = await Promise.all([
             this.jwtService.signAsync(payload, {
@@ -178,8 +153,8 @@ export class AuthService {
         return { accessToken, refreshToken };
     }
     private async updateRefreshToken(userId: number, token: string) {
-        const tokenHashed = await this.hashData(token);
-        await this.usersService.update(userId, {
+        const tokenHashed = this.hashData(token);
+        await this.usersService.updateUser(userId, {
             refreshToken: tokenHashed
         });
     }

@@ -1,7 +1,6 @@
 import {Injectable} from '@nestjs/common';
-import {User} from "@prisma/client";
+import {Profile, User} from "@prisma/client";
 import {PrismaService} from "../prisma.service";
-import {UserPayloadSelector} from "./dto/user.payload.dto";
 import {IncorrectIDFormatException, UserNotFoundException} from "../errors";
 
 type ID = string | number;
@@ -10,76 +9,69 @@ type ID = string | number;
 export class UsersService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    update(userId: ID, data: Partial<User>): Promise<User> {
-        this.checkIdCurrent(userId);
-
+    updateUser(userId: number, data: Partial<User>): Promise<User> {
         return this.prismaService.user.update({
-            where: {
-                id: +userId
-            },
+            where: { id: userId },
+            data
+        });
+    }
+    updateProfile(profileId: number, data: Partial<Profile>): Promise<Profile> {
+        return this.prismaService.profile.update({
+            where: { id: profileId },
             data
         });
     }
 
-    async getUserById<T extends UserPayloadSelector>(userId: ID, returnConfig?: T) {
-        this.checkIdCurrent(userId);
-
-        const user = await this.prismaService.user.findUnique({
-            select: this.getReturnConfig(returnConfig),
-            where: { id: +userId }
-        }) as never as Promise<User>;
-
-        if (!user) throw UserNotFoundException;
-
-        return user;
+    async deleteUserById(userId: number): Promise<Profile> {
+        return this.prismaService.user.delete({
+            where: { id: userId },
+            include: { profile: true }
+        }).then(user => user.profile);
     }
-    async getUserByUsername<T extends UserPayloadSelector>(username: string, returnConfig?: T) {
+
+    async getProfileByUserId(userId: number): Promise<Profile> {
         return this.prismaService.user.findUnique({
-            select: this.getReturnConfig(returnConfig),
+            where: { id: userId },
+            include: { profile: true }
+        }).then(user => user.profile);
+    }
+    async getUserByProfileId(profileId: number): Promise<User> {
+        return this.prismaService.profile.findUnique({
+            where: { id: profileId },
+            include: { user: true }
+        }).then(profile => profile.user);
+    }
+
+    getUserById(userId: number): Promise<User> {
+        return this.prismaService.user.findUnique({
+            where: { id: userId }
+        });
+    }
+    getProfileById(profileId: number): Promise<Profile> {
+        return this.prismaService.profile.findUnique({
+            where: { id: profileId }
+        });
+    }
+
+    getUserByUsername(username: string): Promise<User> {
+        return this.prismaService.user.findUnique({
             where: { username }
-        }) as never as Promise<User>;
+        });
+    }
+    getProfileByUsername(username: string): Promise<Profile> {
+        return this.prismaService.profile.findUnique({
+            where: { username }
+        });
     }
 
-    async getUsers<T extends UserPayloadSelector>(returnConfig?: T) {
-        return this.prismaService.user.findMany({
-            select: this.getReturnConfig(returnConfig)
-        }) as never as Promise<User>[];
+    getUsers(): Promise<User[]> {
+        return this.prismaService.user.findMany();
+    }
+    getProfiles(): Promise<Profile[]> {
+        return this.prismaService.profile.findMany();
     }
 
-    async userExistedOrFalse<T extends UserPayloadSelector>(config: Omit<Partial<User>, 'password'>, returnConfig?: T): Promise<false | User> {
-        const id = config.id;
-        const username = config.username;
-
-        const user = await this.prismaService.user.findUnique({
-            where: {
-                id,
-                username
-            },
-            select: this.getReturnConfig(returnConfig)
-        }) as User;
-        return user ?? false;
-    }
-
-    private getReturnConfig<T extends UserPayloadSelector>(config?: T): Required<UserPayloadSelector> {
-        return {
-            id: true,
-            username: true,
-            photo: true,
-            refreshToken: false,
-            firstName: true,
-            lastName: true,
-            birthday: true,
-            status: true,
-            access: true,
-            password: false,
-            role: true,
-            gender: true,
-            vkId: true,
-
-            ...config
-        };
-    }
-    private checkIdCurrent(id: ID) {
+    checkIdCurrent(id: ID): void {
         if (!/^-?[\d.]+(?:e-?\d+)?$/.test(id.toString())) throw IncorrectIDFormatException;
     }
 }

@@ -1,13 +1,11 @@
 import {PassportStrategy} from "@nestjs/passport";
 import {ExtractJwt, Strategy} from "passport-jwt";
-import {PayloadDto, PayloadReturnDto} from "./dto/payload.dto";
+import {PayloadReturnDto, TokenPayloadDto} from "./dto/payload.dto";
 import {Injectable} from "@nestjs/common";
 import {UsersService} from "../../users/users.service";
 import {ConfigService} from "@nestjs/config";
-import {
-    AuthorizedUserNotFoundException
-} from "../../errors";
 import {Request} from "express";
+import validate from './validate';
 
 @Injectable()
 export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -22,19 +20,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
         });
     }
 
-    async validate(req: Request, payload: PayloadDto): Promise<PayloadReturnDto> {
-        const token = req.get('Authorization').replace('Bearer', '').trim();
-        const user = await this.usersService.userExistedOrFalse(
-            { id: payload.id },
-            { refreshToken: true }
-        );
-        if (!user || !user.refreshToken) throw AuthorizedUserNotFoundException;
-        delete user.refreshToken;
-
-        return {
-            token,
-            payload,
-            user
-        };
+    async validate(req: Request, payload: TokenPayloadDto): Promise<PayloadReturnDto> {
+        return await validate(req, payload, this.usersService);
     }
 }

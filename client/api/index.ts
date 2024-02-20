@@ -19,6 +19,9 @@ import type {APIEmpty, APIParam} from "~/composables/useAPIFetch";
 
 export type APIRoutes = {
     GET: {
+        'users': {
+            response: UserEntity[];
+        },
         'users/{id}': {
             response: UserEntity;
             params: {

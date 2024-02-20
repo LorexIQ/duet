@@ -9,27 +9,38 @@ datasource db {
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
-  username     String   @unique
-  firstName    String
-  lastName     String
-  birthday     String
-  gender       Gender   @default(NULL)
-  role         Role     @default(USER)
-  status       String?
-  photo        String?
+  id       Int    @id @default(autoincrement())
+  username String @unique
+
   password     String?
   refreshToken String?
-  access       Boolean? @default(false)
+  vkToken      String?
+  profile      Profile?
+}
 
-  vkId Int?
+model Profile {
+  id        Int    @id @default(autoincrement())
+  role      Role   @default(USER)
+  username  String @unique
+  firstName String
+  lastName  String
+  birthday  String
+  gender    Gender @default(NULL)
+
+  vkId   Int?
+  status String?
+  photo  String?
+  access Boolean? @default(false)
+
+  user User @relation(fields: [username], references: [username], onDelete: Cascade)
 }
 
 model Content {
-  id             Int    @id @default(autoincrement())
-  name           String
-  episodesVieved Int?   @default(1)
-  vieved         Int?   @default(1)
+  id   Int    @id @default(autoincrement())
+  name String
+
+  episodesVieved Int? @default(1)
+  vieved         Int? @default(1)
 
   categories Category[]
 }
