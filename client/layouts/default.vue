@@ -12,7 +12,9 @@ watch(fetchStorage.isLoader, value => {
 <template>
   <div class="default-layout">
     <system-navbar/>
-    <system-logo/>
+    <div class="default-layout__header">
+      <system-logo/>
+    </div>
     <div
         class="default-layout__content"
         ref="contentRef"
@@ -38,6 +40,13 @@ watch(fetchStorage.isLoader, value => {
   transition: .3s;
   overflow: hidden;
 
+  &__header {
+    padding: 10px;
+
+    .logo {
+      height: 40px;
+    }
+  }
   &__content {
     width: 100%;
     height: 100%;
@@ -56,10 +65,6 @@ watch(fetchStorage.isLoader, value => {
         background: var($textColor3);
       }
     }
-  }
-
-  & .logo {
-    height: 60px;
   }
 }
 </style>

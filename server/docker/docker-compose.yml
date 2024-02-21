@@ -2,8 +2,8 @@ version: '3.9'
 
 services:
   api:
-    container_name: moviegram-api
-    image: moviegram-api
+    container_name: duet-api
+    image: duet-api
     env_file:
       - .env
     build:
@@ -15,7 +15,7 @@ services:
     depends_on:
       - db
   db:
-    container_name: moviegram-db
+    container_name: duet-db
     image: postgres:13-alpine
     env_file:
       - .env
@@ -31,4 +31,4 @@ services:
 
 volumes:
   postgres:
-    name: moviegram-backend
+    name: duet-backend

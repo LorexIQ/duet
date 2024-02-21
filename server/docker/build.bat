@@ -1,5 +1,5 @@
 docker compose down
-docker rmi moviegram-api
+docker rmi duet-api
 docker compose --env-file ".env" up -d
 
-docker exec -d moviegram-api npm run db:push
+docker exec -d duet-api npm run db:push

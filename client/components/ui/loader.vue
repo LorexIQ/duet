@@ -38,8 +38,8 @@ defineProps<Props>();
   & .logo {
     position: absolute;
     top: 0;
-    height: 80px;
-    margin: 0 auto;
+    height: 40px;
+    margin: 10px auto;
   }
 }
 </style>

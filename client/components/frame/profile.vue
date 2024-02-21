@@ -143,14 +143,14 @@ onUnmounted(() => contentRef.value.removeEventListener("scroll", scrollList))
       class="profile-frame"
       v-if="!isError"
       :style="{
-        '--scroll-img-top': `${between(70, scrollTransformPercent, 50)}px`,
+        '--scroll-img-top': `${between(70, scrollTransformPercent, 60)}px`,
         '--scroll-img-padding': `${between(10, scrollTransformPercent, 3)}px`,
         '--scroll-img-border': `${between(50, scrollTransformPercent, 33)}px`,
         '--scroll-img-height': `${between(220, scrollTransformPercent, 66)}px`,
         '--scroll-name-font-1': `${between(24, scrollTransformPercent, 14)}px`,
         '--scroll-name-font-2': `${between(14, scrollTransformPercent, 8)}px`,
         '--scroll-name-padding': `${between(10, scrollTransformPercent, 4)}px`,
-        '--scroll-name-top': `${between(290, scrollTransformPercent, 116)}px`,
+        '--scroll-name-top': `${between(290, scrollTransformPercent, 126)}px`,
       }"
   >
     <div class="profile-frame__img">
@@ -266,7 +266,7 @@ onUnmounted(() => contentRef.value.removeEventListener("scroll", scrollList))
   & > h3 {
     position: sticky;
     z-index: 0;
-    top: 95px;
+    top: 105px;
     padding: 10px;
     border-radius: 0 0 10px 10px;
     color: var($textColor3);

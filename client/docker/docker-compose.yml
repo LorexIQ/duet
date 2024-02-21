@@ -2,8 +2,8 @@ version: '3.9'
 
 services:
   client:
-    container_name: moviegram-client
-    image: moviegram-client
+    container_name: duet-client
+    image: duet-client
     restart: always
     build:
       context: ../.

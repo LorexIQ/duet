@@ -1,3 +1,3 @@
 docker compose down
-docker rmi moviegram-client
+docker rmi duet-client
 docker compose --env-file ".env" up -d

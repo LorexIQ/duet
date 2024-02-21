@@ -6,7 +6,7 @@ export type ThemesReturn = {
     selectTheme: (newTheme: Themes) => void;
 };
 
-const storeKey = 'moviegram:theme';
+const storeKey = 'duet:theme';
 const themes: Themes[] = ['light', 'dark'];
 
 const getTheme = (): Themes | null => localStorage.getItem(storeKey) as Themes;
