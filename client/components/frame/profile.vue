@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type {IconsType} from "~/app/icons";
-import type {UserEntity} from "~/api/entities";
 import type {UISelectListElement} from "~/components/ui/select.vue";
+import type {UserEntity} from "~/api/entities";
+import type {IconsType} from "~/app/icons";
 
 interface PinConfig<T = null> {
   icon: IconsType;
@@ -21,6 +21,8 @@ const router = useRouter();
 const contentRef = useState<HTMLDivElement>('contentRef');
 const userProfile = reactive({} as UserEntity);
 const isError = ref('');
+let lastScrollChangeTimestamp = 0;
+let lastScrollChangeTimeout: NodeJS.Timeout;
 
 const maxScrollTransform = 200;
 const scrollTransformPercent = ref(0);
@@ -118,9 +120,18 @@ function between(mn: number, cr: number, mx: number): number {
 }
 function scrollList(event: Event) {
   const target = event.target as HTMLDivElement;
+  const timeDifference = Date.now() - lastScrollChangeTimestamp;
 
-  scrollTransformPercent.value = Math.round(target.scrollTop * 100 / maxScrollTransform);
-  if (scrollTransformPercent.value > 100) scrollTransformPercent.value = 100;
+  clearTimeout(lastScrollChangeTimeout);
+
+  if (timeDifference > 50) {
+    lastScrollChangeTimestamp = Date.now();
+
+    scrollTransformPercent.value = Math.round(target.scrollTop * 100 / maxScrollTransform);
+    if (scrollTransformPercent.value > 100) scrollTransformPercent.value = 100;
+  } else {
+    lastScrollChangeTimeout = setTimeout(() => scrollList(event), timeDifference);
+  }
 }
 
 onMounted(() => contentRef.value.addEventListener("scroll", scrollList))
@@ -203,6 +214,7 @@ onUnmounted(() => contentRef.value.removeEventListener("scroll", scrollList))
           <template v-slot:title>{{ genderPinConfig.title }}</template>
         </ui-info-pin>
         <ui-info-pin
+            v-if="vkPinConfig.meta?.id"
             :icon="vkPinConfig.icon"
             :color="vkPinConfig.color"
         >
@@ -224,7 +236,7 @@ onUnmounted(() => contentRef.value.removeEventListener("scroll", scrollList))
       </div>
     </div>
   </div>
-  <message-frame v-else>
+  <ui-message-frame v-else>
     <template v-slot:title>Ошибка загрузки</template>
     <template v-slot:description>{{ isError }}</template>
     <template v-slot:actions>
@@ -241,7 +253,7 @@ onUnmounted(() => contentRef.value.removeEventListener("scroll", scrollList))
         Назад
       </ui-button>
     </template>
-  </message-frame>
+  </ui-message-frame>
 </template>
 
 <style scoped lang="scss">
@@ -275,23 +287,26 @@ onUnmounted(() => contentRef.value.removeEventListener("scroll", scrollList))
   padding-bottom: 25px;
 
   &__img, &__name {
+    position: fixed;
     z-index: 1;
     width: 100%;
     max-width: min(596px, 100%);
+    pointer-events: none;
   }
   &__img {
-    position: fixed;
     top: var(--scroll-img-top);
     display: flex;
     justify-content: center;
+    z-index: 1;
 
     & > img {
-      z-index: 1;
+      z-index: 2;
       width: var(--scroll-img-height);
       height: var(--scroll-img-height);
       padding: var(--scroll-img-padding);
       border-radius: var(--scroll-img-border);
       background: var($textColor3);
+      transition: .15s;
     }
 
     &:before {
@@ -302,10 +317,10 @@ onUnmounted(() => contentRef.value.removeEventListener("scroll", scrollList))
       width: 100%;
       height: calc(var(--scroll-img-height) - 6px);
       background: var($background);
+      transition: .15s;
     }
   }
   &__name {
-    position: fixed;
     top: var(--scroll-name-top);
     display: flex;
     flex-direction: column;
@@ -315,8 +330,11 @@ onUnmounted(() => contentRef.value.removeEventListener("scroll", scrollList))
     padding-bottom: 10px;
     color: var($textColor3);
     background: var($background);
+    transition: .15s;
 
     & span {
+      transition: .15s;
+
       &:first-child {
         font-size: var(--scroll-name-font-1);
         font-weight: 600;
@@ -327,7 +345,7 @@ onUnmounted(() => contentRef.value.removeEventListener("scroll", scrollList))
     }
   }
   &__status {
-    margin-top: 330px;
+    margin-top: 310px;
 
     &__content {
       text-align: center;

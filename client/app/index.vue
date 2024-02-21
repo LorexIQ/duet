@@ -1,10 +1,10 @@
 <script setup lang="ts">
-calculateWindowHeight();
+import useOnResize from "~/composables/useOnResize";
 
-function calculateWindowHeight() {
+useOnResize(() => {
   const vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
-}
+}, { immediate: true });
 </script>
 
 <template>
