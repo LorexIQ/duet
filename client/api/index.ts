@@ -1,3 +1,10 @@
+import type {
+    AuthVkBodyEntity,
+    TokenEntity,
+    UserEntity
+} from "~/api/entities";
+import type {APIEmpty, APIParam} from "~/composables/useAPIFetch";
+
 /*
 * Structure
 *
@@ -14,42 +21,28 @@
 *   };
 * };
 * */
-import type {TokenEntity, UserEntity} from "~/api/entities";
-import type {APIEmpty, APIParam} from "~/composables/useAPIFetch";
-
 export type APIRoutes = {
     GET: {
-        'users': {
+        'profiles': {
             response: UserEntity[];
         },
-        'users/{id}': {
+        'profiles/{id}': {
             response: UserEntity;
             params: {
                 id: APIParam;
             };
         };
-        'users/me': {
+        'profiles/me': {
             response: UserEntity;
         };
     },
     POST: {
         'auth/vkSignIn': {
             response: TokenEntity;
-            body: {
-                token: string;
-                uuid: string;
-            };
+            body: AuthVkBodyEntity;
         };
     };
     PATCH: {
-        'users/access/{id}': {
-            response: APIEmpty;
-            params: {
-                id: APIParam;
-            };
-            body: {
-                access: boolean;
-            }
-        }
+
     }
 }

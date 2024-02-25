@@ -47,24 +47,6 @@ const idPinConfig = computed<PinConfig>(() => {
     title: 'ID Пользователя'
   };
 });
-const accessPinConfig = computed<PinConfig>(() => {
-  const access = userProfile.access;
-  return {
-    icon: 'Access',
-    color: access ? '#47b90f' : '#e11d48',
-    value: access ? 'Имеется' : 'Отсутствует',
-    title: 'Доступ к контенту'
-  };
-});
-const rolePinConfig = computed<PinConfig>(() => {
-  const role = userProfile.role;
-  return {
-    icon: 'User',
-    color: '#f4a90a',
-    value: role === 'ADMIN' ? 'Админ' : 'Пользователь',
-    title: 'Роль'
-  };
-});
 const birthdayPinConfig = computed<PinConfig>(() => {
   const birthday = userProfile.birthday;
   return {
@@ -95,7 +77,7 @@ const vkPinConfig = computed<PinConfig<{ id: number }>>(() => {
 });
 
 try {
-  Object.assign(userProfile, await useAPIFetch('GET', 'users/{id}', {
+  Object.assign(userProfile, await useAPIFetch('GET', 'profiles/{id}', {
     params: { id: props.id }
   }, {
     loader: true
@@ -103,17 +85,6 @@ try {
 } catch (e: any) {
   isError.value = e.data.message[0];
 }
-
-watch(() => userProfile.access, value => {
-  useAPIFetch('PATCH', 'users/access/{id}', {
-    params: {
-      id: userProfile.id
-    },
-    body: {
-      access: value
-    }
-  });
-});
 
 function between(mn: number, cr: number, mx: number): number {
   return mn + (mx - mn) / 100 * cr;
@@ -176,28 +147,6 @@ onUnmounted(() => contentRef.value.removeEventListener("scroll", scrollList))
         >
           <template v-slot:value>{{ idPinConfig.value }}</template>
           <template v-slot:title>{{ idPinConfig.title }}</template>
-        </ui-info-pin>
-        <ui-info-pin
-            :icon="accessPinConfig.icon"
-            :color="accessPinConfig.color"
-        >
-          <template v-slot:value>{{ accessPinConfig.value }}</template>
-          <template v-slot:title>{{ accessPinConfig.title }}</template>
-          <template v-slot:actions>
-            <ui-select
-                v-if="isAdmin().value && id !== useMeAuth().value.id && userProfile.role !== 'ADMIN'"
-                :return-value="true"
-                :list="accessSelectList"
-                v-model="userProfile.access"
-            />
-          </template>
-        </ui-info-pin>
-        <ui-info-pin
-            :icon="rolePinConfig.icon"
-            :color="rolePinConfig.color"
-        >
-          <template v-slot:value>{{ rolePinConfig.value }}</template>
-          <template v-slot:title>{{ rolePinConfig.title }}</template>
         </ui-info-pin>
         <ui-info-pin
             :icon="birthdayPinConfig.icon"

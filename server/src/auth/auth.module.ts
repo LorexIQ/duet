@@ -2,10 +2,10 @@ import {Module} from '@nestjs/common';
 import {AuthService} from './auth.service';
 import {AuthController} from './auth.controller';
 import {PrismaService} from "../prisma.service";
-import {UsersModule} from "../users/users.module";
 import {AccessTokenStrategy, RefreshTokenStrategy} from "./strategy";
 import {JwtModule} from "@nestjs/jwt";
 import {HttpModule} from "@nestjs/axios";
+import {UsersModule} from "../users/users.module";
 
 @Module({
     providers: [
@@ -16,7 +16,6 @@ import {HttpModule} from "@nestjs/axios";
     ],
     controllers: [AuthController],
     imports: [
-        UsersModule,
         JwtModule.register({
             global: true,
             secret: process.env.SECRET ?? '',
@@ -24,7 +23,8 @@ import {HttpModule} from "@nestjs/axios";
                 expiresIn: '24h'
             }
         }),
-        HttpModule.register({})
+        HttpModule.register({}),
+        UsersModule
     ]
 })
 export class AuthModule {

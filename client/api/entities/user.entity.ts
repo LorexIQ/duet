@@ -6,11 +6,9 @@ export interface UserEntity {
     firstName: string;
     lastName: string;
     birthday: string;
-    status: string;
-    access: boolean;
-    gender: UserGenderEntity;
-    role: UserRoleEntity;
+    status?: string;
+    gender?: UserGenderEntity;
 }
 
-export type UserGenderEntity = 'MALE' | 'FEMALE' | 'NULL';
+export type UserGenderEntity = 'MALE' | 'FEMALE';
 export type UserRoleEntity = 'USER' | 'ADMIN';

@@ -1,6 +1,8 @@
-import {IsOptional, IsString, MinLength} from "class-validator";
+import {IsNotEmpty, IsObject, IsString, MinLength, ValidateNested} from "class-validator";
+import {DeviceDto} from "../../sessions/dto/device.dto";
+import {Type} from "class-transformer";
 
-export class SignInDto {
+export class UserLoginDto {
     @IsString()
     @MinLength(5)
     username: string;
@@ -8,4 +10,18 @@ export class SignInDto {
     @IsString()
     @MinLength(5)
     password: string;
+}
+
+export class SignInDto {
+    @IsNotEmpty()
+    @IsObject()
+    @ValidateNested()
+    @Type(() => UserLoginDto)
+    user: UserLoginDto;
+
+    @IsNotEmpty()
+    @IsObject()
+    @ValidateNested()
+    @Type(() => DeviceDto)
+    device: DeviceDto;
 }

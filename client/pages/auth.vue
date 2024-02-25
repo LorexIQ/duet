@@ -25,8 +25,11 @@ function checkPageType(payload: string) {
 
     useAPIFetch('POST', 'auth/vkSignIn', {
       body: {
-        token: vkPayload.token,
-        uuid: vkPayload.uuid
+        vk: {
+          token: vkPayload.token,
+          uuid: vkPayload.uuid
+        },
+        device: useDeviceMeta()
       }
     }, { loader: true })
         .then(res => {

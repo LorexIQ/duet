@@ -7,18 +7,17 @@ async function main(): Promise<void> {
     const adminData: Prisma.XOR<Prisma.UserCreateInput, Prisma.UserUncheckedCreateInput> = {
         id: 0,
         username: 'admin',
+        role: 'ADMIN',
         password: bcrypt.hashSync('admin', 10),
         profile: {
             connectOrCreate: {
                 where: { username: 'admin' },
                 create: {
                     id: 0,
-                    role: 'ADMIN',
                     firstName: 'Админ',
                     lastName: 'Админов',
                     birthday: '01.01.2000',
-                    photo: 'https://vectorified.com/images/admin-logo-icon-16.jpg',
-                    access: true
+                    photo: 'https://vectorified.com/images/admin-logo-icon-16.jpg'
                 }
             }
         }

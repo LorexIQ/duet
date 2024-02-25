@@ -2,6 +2,7 @@ import {Profile, User} from "@prisma/client";
 
 export class TokenPayloadDto {
   id: number;
+  profileId: number;
   username: string;
   iat: number;
   ext: number;

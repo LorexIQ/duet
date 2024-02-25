@@ -70,7 +70,7 @@ export default defineNuxtConfig({
         },
         endpoints: {
             signIn: {path: 'auth/signIn', method: 'POST'},
-            getMe: {path: 'users/me', method: 'GET'},
+            getMe: {path: 'profiles/me', method: 'GET'},
             refreshToken: {path: 'auth/refresh', method: 'POST'},
         },
         pages: {
