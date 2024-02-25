@@ -23,6 +23,7 @@ import {
     SignInDto,
     VkSignInDto
 } from "./dto";
+import {CryptoService} from "../crypto.service";
 
 @Injectable()
 export class AuthService {
@@ -33,7 +34,8 @@ export class AuthService {
         private configService: ConfigService,
         private jwtService: JwtService,
         private usersService: UsersService,
-        private httpService: HttpService
+        private httpService: HttpService,
+        private cryptoService: CryptoService
     ) {}
 
     async signIn(data: SignInDto): Promise<TokenInterface> {
@@ -84,11 +86,11 @@ export class AuthService {
         if (!user) {
             const isUserAdmin = vkUser.id == this.configService.get('VK_ADMIN_ID', 0);
 
-            user = await this.createUser(
+            user = await this.usersService.createUser(
                 {
                     username: vkUser.screen_name ?? 'ID' + vkUser.id,
                     role: isUserAdmin ? 'ADMIN' : 'USER',
-                    vkToken
+                    vkToken: this.cryptoService.encrypt(vkToken)
                 },
                 {
                     vkId: vkUser.id,
@@ -101,7 +103,7 @@ export class AuthService {
                 }
             );
         } else {
-            user = await this.usersService.updateUser(user.id, { vkToken });
+            user = await this.usersService.updateUser(user.id, { vkToken: this.cryptoService.encrypt(vkToken) });
         }
 
         const tokens = await this.createTokens(user);
@@ -120,18 +122,6 @@ export class AuthService {
         return tokens;
     }
 
-    private createUser(user: Prisma.UserCreateInput, profile: Omit<Prisma.ProfileCreateInput, 'user'>) {
-        return this.prismaService.user.create({
-            data: {
-                ...user,
-                ...(user.password ? { password: this.hashData(user.password) } : {}),
-                ...(user.vkToken ? { vkToken: this.hashData(user.vkToken) } : {}),
-                profile: {
-                    create: profile
-                }
-            }
-        });
-    }
 
     private hashData(data: string): string {
         return bcrypt.hashSync(data, 10);

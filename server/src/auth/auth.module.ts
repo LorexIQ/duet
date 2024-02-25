@@ -6,15 +6,9 @@ import {AccessTokenStrategy, RefreshTokenStrategy} from "./strategy";
 import {JwtModule} from "@nestjs/jwt";
 import {HttpModule} from "@nestjs/axios";
 import {UsersModule} from "../users/users.module";
+import {CryptoService} from "../crypto.service";
 
 @Module({
-    providers: [
-        AuthService,
-        PrismaService,
-        AccessTokenStrategy,
-        RefreshTokenStrategy
-    ],
-    controllers: [AuthController],
     imports: [
         JwtModule.register({
             global: true,
@@ -25,6 +19,14 @@ import {UsersModule} from "../users/users.module";
         }),
         HttpModule.register({}),
         UsersModule
+    ],
+    controllers: [AuthController],
+    providers: [
+        AuthService,
+        PrismaService,
+        AccessTokenStrategy,
+        RefreshTokenStrategy,
+        CryptoService
     ]
 })
 export class AuthModule {

@@ -20,6 +20,7 @@
 
   & > span {
     color: var($textColor3);
+    text-align: center;
 
     &:first-child {
       font-size: 22px;

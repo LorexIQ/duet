@@ -50,8 +50,8 @@ export class ProfilesService {
 
         if (
             requester.user.role !== Role.ADMIN && (
-                !requester.group ||
-                ![...requesterGroup.profiles, ...requesterGroup.groupsArchive].some(profile => profile.id === resProfileId)
+                (!requester.group && reqProfileId !== resProfileId) ||
+                (requester.group && ![...requesterGroup.profiles, ...requesterGroup.groupsArchive].some(profile => profile.id === resProfileId))
             )
         ) throw ProfileAccessDividedException;
 

@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import {Prisma, Profile, Role, User} from "@prisma/client";
+import {Prisma, Profile, User} from "@prisma/client";
 import {PrismaService} from "../prisma.service";
 import {UserIncludes} from "../types";
 
@@ -10,6 +10,19 @@ export class UsersService {
         private prismaService: PrismaService
     ) {}
 
+    createUser(
+        userData: Omit<Prisma.UserCreateInput, 'profile' | 'sessions'>,
+        profileData: Omit<Prisma.ProfileCreateWithoutUserInput, 'group' | 'groupsArchive'>
+    ): Promise<User> {
+        return this.prismaService.user.create({
+            data: {
+                ...userData,
+                profile: {
+                    create: profileData
+                }
+            }
+        });
+    }
     updateUser(userId: number, data: Prisma.UserUpdateInput): Promise<User> {
         return this.prismaService.user.update({
             where: { id: userId },
