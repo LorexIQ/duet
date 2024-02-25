@@ -21,8 +21,10 @@ $ npm run start:prod
 ## Env
 ```bash
 APP_PORT=
+
 ACCESS_SECRET=
 REFRESH_SECRET=
+CRYPTO_SECRET=
 
 VK_ACCESS_TOKEN=
 VK_ADMIN_ID=
