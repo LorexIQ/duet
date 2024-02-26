@@ -80,8 +80,7 @@ export default defineNuxtConfig({
     },
 
     pwa: {
-        srcDir: 'service-worker',
-        filename: 'sw.ts',
+        strategies: 'generateSW',
         registerType: 'autoUpdate',
         manifest: {
             name: "DUET: food, comfort, TV",
@@ -115,6 +114,9 @@ export default defineNuxtConfig({
                     type: 'image/png'
                 },
             ],
+        },
+        client: {
+            installPrompt: true
         },
         workbox: {
             globPatterns: ['**/*.{js,css,html,png,svg,ico}']
