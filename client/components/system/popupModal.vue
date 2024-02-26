@@ -66,7 +66,7 @@ onUpdated(() => boxHeight.value = boxRef.value?.clientHeight!);
 @import "@colors";
 
 .popup-modal {
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   bottom: 0;

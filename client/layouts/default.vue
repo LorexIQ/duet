@@ -34,9 +34,7 @@ watch(fetchStorage.isLoader, value => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: min(600px, 100%);
   height: 100%;
-  margin: 0 auto;
   background: var($background);
   transition: .3s;
   overflow: hidden;

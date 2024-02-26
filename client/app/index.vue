@@ -23,27 +23,15 @@ useHead({
 
 <template>
   <div class="app">
-    {{$pwa}}
     <nuxt-pwa-manifest/>
-    <nuxt-layout>
-      <nuxt-page/>
-    </nuxt-layout>
-    <div
-        v-if="$pwa?.showInstallPrompt && !$pwa?.offlineReady && !$pwa?.needRefresh"
-        class="pwa-toast"
-        role="alert"
-    >
-      <div class="message">
-          <span>
-            Install PWA
-          </span>
-      </div>
-      <button @click="$pwa.install()">
-        Install
-      </button>
-      <button @click="$pwa.cancelInstall()">
-        Cancel
-      </button>
+
+    <div class="app__layout">
+      <nuxt-layout>
+        <nuxt-page/>
+      </nuxt-layout>
+    </div>
+    <div class="app__footer">
+      <system-install-app-ad/>
     </div>
   </div>
 </template>
@@ -52,31 +40,19 @@ useHead({
 @import "@colors";
 
 .app {
+  display: flex;
+  flex-direction: column;
+  max-width: min(600px, 100%);
+  width: 100%;
+  margin: 0 auto;
   height: calc(var(--vh, 1vh) * 100);
   background: var($backspace);
   transition: .3s;
-}
 
-.pwa-toast {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  margin: 16px;
-  padding: 12px;
-  border: 1px solid #8885;
-  border-radius: 4px;
-  z-index: 1;
-  text-align: left;
-  box-shadow: 3px 4px 5px 0 #8885;
-}
-.pwa-toast .message {
-  margin-bottom: 8px;
-}
-.pwa-toast button {
-  border: 1px solid #8885;
-  outline: none;
-  margin-right: 5px;
-  border-radius: 2px;
-  padding: 3px 10px;
+  &__layout {
+    flex-grow: 1;
+  }
+  &__footer {
+  }
 }
 </style>

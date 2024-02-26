@@ -22,6 +22,7 @@ export default defineNuxtConfig({
 
     app: {
         head: {
+            title: 'DUET',
             link: [
                 {
                     href: '/scripts/snowFlakes/snow.min.css',
@@ -82,41 +83,11 @@ export default defineNuxtConfig({
     pwa: {
         strategies: 'generateSW',
         registerType: 'autoUpdate',
-        manifest: {
-            name: "DUET: food, comfort, TV",
-            description: "Парный дневник для пар",
-            short_name: "DUET",
-            start_url: "/",
-            lang: "ru",
-            theme_color: "#0f172a",
-            display: "standalone",
-            background_color: "#0f172a",
-            orientation: "portrait",
-            icons: [
-                {
-                    src: 'image/192x192px.png',
-                    sizes: '192x192',
-                    type: 'image/png'
-                },
-                {
-                    src: 'image/256x256px.png',
-                    sizes: '256x256',
-                    type: 'image/png'
-                },
-                {
-                    src: 'image/384x384px.png',
-                    sizes: '384x384',
-                    type: 'image/png'
-                },
-                {
-                    src: 'image/512x512px.png',
-                    sizes: '512x512',
-                    type: 'image/png'
-                },
-            ],
-        },
+        manifestFilename: './manifest.webmanifest',
+        registerWebManifestInRouteRules: true,
         client: {
-            installPrompt: true
+            installPrompt: true,
+            periodicSyncForUpdates: 20
         },
         workbox: {
             globPatterns: ['**/*.{js,css,html,png,svg,ico}']

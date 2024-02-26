@@ -2,6 +2,7 @@ type IconsInnerType = { [name: string]: string };
 const prepareIconsType = <T extends IconsInnerType>(config: T): T => config;
 
 const icons = prepareIconsType({
+    Times: 'uil:times',
     Magnifier: 'gravity-ui:magnifier',
     Reload: 'tabler:reload',
     Exit: 'solar:exit-bold',
