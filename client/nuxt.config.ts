@@ -22,17 +22,7 @@ export default defineNuxtConfig({
 
     app: {
         head: {
-            meta: [
-                {
-                    name: 'viewport',
-                    content: 'width=device-width, initial-scale=1.0'
-                }
-            ],
             link: [
-                {
-                    href: '/manifest.json',
-                    rel: 'manifest'
-                },
                 {
                     href: '/scripts/snowFlakes/snow.min.css',
                     rel: 'stylesheet',
@@ -89,8 +79,61 @@ export default defineNuxtConfig({
         }
     },
 
+    pwa: {
+        srcDir: 'service-worker',
+        filename: 'sw.ts',
+        registerType: 'autoUpdate',
+        manifest: {
+            name: "DUET: food, comfort, TV",
+            description: "Парный дневник для пар",
+            short_name: "DUET",
+            start_url: "/",
+            lang: "ru",
+            theme_color: "#0f172a",
+            display: "standalone",
+            background_color: "#0f172a",
+            orientation: "portrait",
+            icons: [
+                {
+                    src: 'image/192x192px.png',
+                    sizes: '192x192',
+                    type: 'image/png'
+                },
+                {
+                    src: 'image/256x256px.png',
+                    sizes: '256x256',
+                    type: 'image/png'
+                },
+                {
+                    src: 'image/384x384px.png',
+                    sizes: '384x384',
+                    type: 'image/png'
+                },
+                {
+                    src: 'image/512x512px.png',
+                    sizes: '512x512',
+                    type: 'image/png'
+                },
+            ],
+        },
+        workbox: {
+            globPatterns: ['**/*.{js,css,html,png,svg,ico}']
+        },
+        injectManifest: {
+            globPatterns: ['**/*.{js,css,html,png,svg,ico}']
+        },
+        devOptions: {
+            enabled: true,
+            suppressWarnings: true,
+            navigateFallback: '/',
+            navigateFallbackAllowlist: [/^\/$/],
+            type: 'module',
+        }
+    },
+
     modules: [
-        '~/modules/nuxt-local-auth/module'
+        '~/modules/nuxt-local-auth/module',
+        '@vite-pwa/nuxt'
     ],
 
     devtools: {enabled: true}

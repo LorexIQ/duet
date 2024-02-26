@@ -1,26 +1,12 @@
 <script setup lang="ts">
-const {$themes} = useNuxtApp();
 const fetchStorage = useAPIFetchStore();
-const globalFetchLoader = useSwitch({minSwitchStatusDelay: 500});
-
+const globalFetchLoader = useSwitch({minSwitchStatusDelay: 500})
 const contentRef = useState<HTMLDivElement>('contentRef');
-const themeStatusBar = computed(() => $themes.selectedTheme.value === 'light' ? '#ffffff' : '#0f172a');
-const themeKeysStatusBar = [
-  'theme-color',
-  'msapplication-navbutton-color',
-  'apple-mobile-web-app-status-bar-style'
-];
+
 
 watch(fetchStorage.isLoader, value => {
   if (value) globalFetchLoader.show();
   else globalFetchLoader.hide();
-});
-
-useHead({
-  meta: themeKeysStatusBar.map(name => ({
-    name,
-    content: themeStatusBar
-  }))
 });
 </script>
 
